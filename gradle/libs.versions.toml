@@ -59,4 +59,31 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
 
+[bundles]
+compose = [
+    "androidx-activity-compose",
+    "androidx-lifecycle-runtime-compose",
+    "androidx-lifecycle-viewmodel-compose",
+    "androidx-material3",
+    "androidx-ui",
+    "androidx-ui-graphics",
+    "androidx-ui-tooling-preview",
+    "androidx-compose-material3-adaptive-navigation",
+    "compose-material-icons-extended"
+]
+room = [
+    "room-runtime",
+    "room-ktx",
+]
+compose-debug = [
+    "androidx-ui-tooling",
+    "androidx-ui-test-manifest",
+]
+koin = [
+    "koin-core",
+    "koin-android",
+    "koin-androidx-compose"
+]

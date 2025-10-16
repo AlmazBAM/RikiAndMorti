@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.bagmanovam.rikiandmorti.ui.theme.RikiAndMortiTheme
+import com.bagmanovam.rikiandmorti.presentation.theme.RikiAndMortiTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

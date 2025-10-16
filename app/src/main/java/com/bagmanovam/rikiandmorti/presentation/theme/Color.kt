@@ -1,4 +1,4 @@
-package com.bagmanovam.rikiandmorti.ui.theme
+package com.bagmanovam.rikiandmorti.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
