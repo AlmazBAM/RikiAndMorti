@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">RikiAndMorti</string>
+    <string name="search">Search…</string>
+
+    <string name="request_timeout">Истекло время ожидания ответа.</string>
+    <string name="too_many_requests">Слишком много запросов.</string>
+    <string name="no_internet">Отсутствует интернет соединение.</string>
+    <string name="server_error">Ошибка на стороне сервера.</string>
+    <string name="serialization">Ошибка получения данных.</string>
+    <string name="unknown">Неизвестная ошибка.</string>
 </resources>
