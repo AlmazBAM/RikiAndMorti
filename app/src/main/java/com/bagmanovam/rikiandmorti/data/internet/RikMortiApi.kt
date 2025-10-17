@@ -7,6 +7,6 @@ import retrofit2.http.Query
 
 interface RikMortiApi {
 
-    @GET("character/1,2,3,4,5,6,7,8")
+    @GET("api/character/1,2,3,4")
     suspend fun getRikMortiHeroes(): Response<List<RikMortiHeroDto>>
 }

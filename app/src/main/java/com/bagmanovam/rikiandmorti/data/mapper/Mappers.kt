@@ -12,7 +12,7 @@ fun RikMortiHeroDto.toDomain(): RikMortiHero {
         species = this.species,
         status = this.status,
         gender = this.gender,
-        imageUrl = this.imageUrl
+        imageUrl = this.image
     )
 }
 

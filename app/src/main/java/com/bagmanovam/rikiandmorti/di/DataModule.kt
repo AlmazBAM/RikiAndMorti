@@ -18,6 +18,8 @@ import com.bagmanovam.rikiandmorti.domain.useCase.GetRikMoritHeroesDbUseCase
 import com.bagmanovam.rikiandmorti.domain.useCase.GetRikMortiHeroDbUseCase
 import com.bagmanovam.rikiandmorti.domain.useCase.RequestRikMortiHeroesUseCase
 import com.bagmanovam.rikiandmorti.domain.useCase.SaveRikMoritHeroesDbUseCase
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -25,12 +27,22 @@ import retrofit2.converter.gson.GsonConverterFactory
 val dataModule = module {
     single {
         Retrofit.Builder()
+            .client(get())
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl("https://rickandmortyapi.com/")
             .build()
             .create(RikMortiApi::class.java)
     }
 
+    single {
+        OkHttpClient.Builder()
+            .addInterceptor(
+                HttpLoggingInterceptor().setLevel(
+                    HttpLoggingInterceptor.Level.BODY
+                )
+            )
+            .build()
+    }
 
     single<SearchRikMortiHeroesRepository> { SearchRikMortiHeroesRepositoryImpl(get()) }
     single<RikMortiHeroesDbRepository> { RikMortiHeroesDbRepositoryImpl(get()) }

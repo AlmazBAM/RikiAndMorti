@@ -6,5 +6,5 @@ data class RikMortiHeroDto(
     val species: String,
     val status: String,
     val gender: String,
-    val imageUrl: String
+    val image: String
 )
