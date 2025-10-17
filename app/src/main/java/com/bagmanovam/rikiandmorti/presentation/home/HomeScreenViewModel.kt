@@ -8,9 +8,14 @@ import com.bagmanovam.nasa_planets.core.domain.onSuccess
 import com.bagmanovam.rikiandmorti.domain.useCase.GetRikMoritHeroesDbUseCase
 import com.bagmanovam.rikiandmorti.domain.useCase.RequestRikMortiHeroesUseCase
 import com.bagmanovam.rikiandmorti.domain.useCase.SaveRikMoritHeroesDbUseCase
+import com.bagmanovam.rikiandmorti.domain.useCase.SearchRikMoritHeroesDbUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -20,18 +25,20 @@ class HomeScreenViewModel(
     private val requestUseCase: RequestRikMortiHeroesUseCase,
     private val saveDbUseCase: SaveRikMoritHeroesDbUseCase,
     private val getDbUseCase: GetRikMoritHeroesDbUseCase,
+    private val searchDbUseCase: SearchRikMoritHeroesDbUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeScreenState())
     val uiState = _uiState
         .onStart {
+            registerOnQueryChange()
             val items = getDbUseCase().first()
             _uiState.update { state ->
                 state.copy(
                     errorMessage = null,
                     isLoading = true,
                     isSwipedToUpdate = false,
-                    spaceItems = items
+                    rikMortiHeroes = items
                 )
             }
         }
@@ -41,11 +48,12 @@ class HomeScreenViewModel(
             HomeScreenState()
         )
 
+    private val searchQueryFlow = MutableStateFlow("")
 
     fun onAction(event: HomeEvent) {
         when (event) {
             is HomeEvent.OnQueryChange -> {
-                Log.i(TAG, "query changed: ${event.query}")
+                searchQueryFlow.update { event.query }
             }
 
             HomeEvent.OnRefresh -> {
@@ -76,13 +84,37 @@ class HomeScreenViewModel(
                                     errorMessage = it,
                                     isLoading = true,
                                     isSwipedToUpdate = false,
-                                    spaceItems = items
+                                    rikMortiHeroes = items
                                 )
                             }
                         }
                 }
             }
         }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun registerOnQueryChange() {
+        searchQueryFlow
+            .onEach { input ->
+                _uiState.update { it.copy(query = input) }
+            }
+            .flatMapLatest { query ->
+                if (query.isBlank())
+                    getDbUseCase()
+                else
+                    searchDbUseCase(query)
+            }
+            .onEach { heroes ->
+                Log.e(TAG, "registerOnQueryChange: ${heroes.size}")
+
+                _uiState.update {
+                    it.copy(
+                        rikMortiHeroes = heroes
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     companion object {

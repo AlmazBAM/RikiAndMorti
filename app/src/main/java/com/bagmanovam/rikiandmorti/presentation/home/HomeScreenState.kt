@@ -10,5 +10,5 @@ data class HomeScreenState(
     val isSwipedToUpdate: Boolean = false,
     val errorMessage: NetworkError? = null,
     val query: String = "",
-    val spaceItems: List<RikMortiHero> = emptyList(),
+    val rikMortiHeroes: List<RikMortiHero> = emptyList(),
 )

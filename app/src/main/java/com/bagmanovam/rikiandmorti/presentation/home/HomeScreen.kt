@@ -98,7 +98,7 @@ fun HomeScreen(
                     columns = GridCells.Adaptive(minSize = 150.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    itemsIndexed(uiState.spaceItems) { index, spaceObject ->
+                    itemsIndexed(uiState.rikMortiHeroes) { index, spaceObject ->
                         Box(
                             modifier = Modifier.aspectRatio(1f)
                         ) {
