@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.math.log
 
 class HomeScreenViewModel(
     private val requestUseCase: RequestRikMortiHeroesUseCase,
@@ -53,7 +54,8 @@ class HomeScreenViewModel(
     fun onAction(event: HomeEvent) {
         when (event) {
             is HomeEvent.OnQueryChange -> {
-                searchQueryFlow.update { event.query }
+                Log.e(TAG, "onAction: ${event.query}", )
+                searchQueryFlow.update { event.query.trim() }
             }
 
             HomeEvent.OnRefresh -> {

@@ -16,6 +16,9 @@ interface RikMoritDao {
     @Query("SELECT * FROM rik_morti_items")
     fun getRikMortiHeroes(): Flow<List<RikMortiEntity>>
 
+    @Query("SELECT DISTINCT * FROM rik_morti_items WHERE name LIKE '%' || :query || '%'")
+    fun searchRikMortiHeroes(query: String): Flow<List<RikMortiEntity>>
+
     @Query("SELECT * FROM rik_morti_items WHERE id=:noteId")
     fun getRikMoritHero(noteId: Int): RikMortiEntity
 }

@@ -10,8 +10,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class RikMortiHeroesDbRepositoryImpl(private val dao: RikMoritDao) : RikMortiHeroesDbRepository {
-    override suspend fun getAllRikMortiHeroes(): Flow<List<RikMortiHero>> {
+    override fun getAllRikMortiHeroes(): Flow<List<RikMortiHero>> {
         return dao.getRikMortiHeroes().map { it.entitiesToDomains() }
+    }
+
+    override fun searchRikMortiHeroes(query: String): Flow<List<RikMortiHero>> {
+        return dao.searchRikMortiHeroes(query).map { it.entitiesToDomains() }
     }
 
     override suspend fun getRikMortiHero(noteId: Int): RikMortiHero {

@@ -7,10 +7,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
-class SearchRikMoritHeroesDbInteractor(
+class SearchRikMortiHeroesDbInteractor(
     private val repository: RikMortiHeroesDbRepository
 ) : SearchRikMoritHeroesDbUseCase {
     override suspend fun invoke(query: String): Flow<List<RikMortiHero>> {
-        return withContext(Dispatchers.IO) { repository.getAllRikMortiHeroes() }
+        return withContext(Dispatchers.IO) { repository.searchRikMortiHeroes(query) }
     }
 }
