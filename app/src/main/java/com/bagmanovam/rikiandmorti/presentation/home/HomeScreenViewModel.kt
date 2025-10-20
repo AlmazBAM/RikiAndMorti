@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.math.log
 
 class HomeScreenViewModel(
     private val requestUseCase: RequestRikMortiHeroesUseCase,
@@ -68,7 +67,7 @@ class HomeScreenViewModel(
                 viewModelScope.launch {
                     requestUseCase(20)
                         .onSuccess {
-                            Log.e(TAG, "onSuccess: ")
+                            Log.e(TAG, "onSuccess: $it")
                             _uiState.update { state ->
                                 state.copy(
                                     errorMessage = null,
@@ -108,8 +107,7 @@ class HomeScreenViewModel(
                     searchDbUseCase(query)
             }
             .onEach { heroes ->
-                Log.e(TAG, "registerOnQueryChange: ${heroes.size}")
-
+                Log.e(TAG, "registerOnQueryChange: ${heroes.isEmpty()}")
                 _uiState.update {
                     it.copy(
                         rikMortiHeroes = heroes

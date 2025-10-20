@@ -43,7 +43,6 @@ android {
 
 dependencies {
 
-    implementation(libs.androidx.material)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 

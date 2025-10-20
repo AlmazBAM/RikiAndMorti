@@ -6,4 +6,5 @@ import com.bagmanovam.rikiandmorti.domain.model.RikMortiHero
 
 interface SearchRikMortiHeroesRepository {
     suspend fun requestRikMortiHeroes(count: Int): Result<List<RikMortiHero>, NetworkError>
+    suspend fun requestRikMortiHero(itemId: Int): Result<RikMortiHero, NetworkError>
 }

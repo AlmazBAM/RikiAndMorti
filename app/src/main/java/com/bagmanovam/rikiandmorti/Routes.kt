@@ -6,4 +6,4 @@ import kotlinx.serialization.Serializable
 object Home
 
 @Serializable
-object Description
+data class Description(val itemId: Int)

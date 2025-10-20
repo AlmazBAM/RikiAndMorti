@@ -10,6 +10,7 @@ import com.bagmanovam.rikiandmorti.data.repository.RikMortiHeroesDbRepositoryImp
 import com.bagmanovam.rikiandmorti.data.repository.SearchRikMortiHeroesRepositoryImpl
 import com.bagmanovam.rikiandmorti.domain.interactor.GetRikMoritHeroesDbInteractor
 import com.bagmanovam.rikiandmorti.domain.interactor.GetRikMortiHeroDbInteractor
+import com.bagmanovam.rikiandmorti.domain.interactor.RequestRikMortiHeroInteractor
 import com.bagmanovam.rikiandmorti.domain.interactor.RequestRikMortiHeroesInteractor
 import com.bagmanovam.rikiandmorti.domain.interactor.SaveRikMortiHeroesDbInteractor
 import com.bagmanovam.rikiandmorti.domain.interactor.SearchRikMortiHeroesDbInteractor
@@ -17,6 +18,7 @@ import com.bagmanovam.rikiandmorti.domain.repository.RikMortiHeroesDbRepository
 import com.bagmanovam.rikiandmorti.domain.repository.SearchRikMortiHeroesRepository
 import com.bagmanovam.rikiandmorti.domain.useCase.GetRikMoritHeroesDbUseCase
 import com.bagmanovam.rikiandmorti.domain.useCase.GetRikMortiHeroDbUseCase
+import com.bagmanovam.rikiandmorti.domain.useCase.RequestRikMortiHeroUseCase
 import com.bagmanovam.rikiandmorti.domain.useCase.RequestRikMortiHeroesUseCase
 import com.bagmanovam.rikiandmorti.domain.useCase.SaveRikMoritHeroesDbUseCase
 import com.bagmanovam.rikiandmorti.domain.useCase.SearchRikMoritHeroesDbUseCase
@@ -50,6 +52,7 @@ val dataModule = module {
     single<RikMortiHeroesDbRepository> { RikMortiHeroesDbRepositoryImpl(get()) }
 
     factory<RequestRikMortiHeroesUseCase> { RequestRikMortiHeroesInteractor(get()) }
+    factory<RequestRikMortiHeroUseCase> { RequestRikMortiHeroInteractor(get()) }
     factory<GetRikMoritHeroesDbUseCase> { GetRikMoritHeroesDbInteractor(get()) }
     factory<SaveRikMoritHeroesDbUseCase> { SaveRikMortiHeroesDbInteractor(get()) }
     factory<GetRikMortiHeroDbUseCase> { GetRikMortiHeroDbInteractor(get()) }

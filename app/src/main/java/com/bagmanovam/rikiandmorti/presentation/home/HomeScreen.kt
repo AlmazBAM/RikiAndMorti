@@ -2,9 +2,8 @@ package com.bagmanovam.rikiandmorti.presentation.home
 
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -15,31 +14,33 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.intl.LocaleList
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.bagmanovam.rikiandmorti.core.presentation.RikMortiHeroCard
 import com.bagmanovam.rikiandmorti.core.presentation.SearchBar
 import com.bagmanovam.rikiandmorti.core.presentation.utils.toString
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -48,7 +49,6 @@ fun HomeScreen(
     onHomeAction: (HomeEvent) -> Unit,
 ) {
     val context = LocalContext.current
-    val refreshScope = rememberCoroutineScope()
 
     val pullRefreshState = rememberPullToRefreshState()
     Log.e("TAG", "HomeScreen: ${uiState.isSwipedToUpdate}")
@@ -90,23 +90,55 @@ fun HomeScreen(
                 isRefreshing = uiState.isSwipedToUpdate,
                 onRefresh = { onHomeAction(HomeEvent.OnRefresh) }
             ) {
-                LazyVerticalGrid(
-                    modifier = Modifier.fillMaxSize(),
-                    columns = GridCells.Fixed(2),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(vertical = 16.dp)
-                ) {
-                    itemsIndexed(uiState.rikMortiHeroes) { index, rikMortiHero ->
-                        RikMortiHeroCard(
-                            modifier = Modifier,
-                            item = rikMortiHero,
-                            onItemClick = { onItemClick(index) }
+                if (uiState.isLoading) {
+                    LazyVerticalGrid(
+                        modifier = Modifier.fillMaxSize(),
+                        columns = GridCells.Fixed(2),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        contentPadding = PaddingValues(vertical = 16.dp)
+                    ) {
+                        val items = uiState.rikMortiHeroes
+                        if (items.isEmpty()) {
+                            item {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "Ничего не найдено",
+                                        style = MaterialTheme.typography.bodyMedium.copy(
+                                            fontSize = 16.sp,
+                                            lineHeight = 18.sp
+                                        ),
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                            }
+                        } else {
+                            itemsIndexed(items) { index, rikMortiHero ->
+                                Log.e("TAG", "HomeScreen: $rikMortiHero", )
+                                RikMortiHeroCard(
+                                    modifier = Modifier,
+                                    item = rikMortiHero,
+                                    onItemClick = { onItemClick(index + 1) }
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                            }
+                        }
+
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.onBackground,
+                            strokeWidth = 3.dp,
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
-
             }
         }
 
