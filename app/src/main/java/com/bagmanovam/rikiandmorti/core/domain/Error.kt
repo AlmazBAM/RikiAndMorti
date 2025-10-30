@@ -1,3 +1,3 @@
-package com.bagmanovam.nasa_planets.core.domain
+package com.bagmanovam.rikiandmorti.core.domain
 
 interface Error

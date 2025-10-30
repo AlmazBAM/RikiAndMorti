@@ -1,8 +1,6 @@
 package com.bagmanovam.rikiandmorti.core.domain
 
-import com.bagmanovam.nasa_planets.core.domain.Error
-
-enum class NetworkError : Error {
+enum class NetworkError : DomainError {
     REQUEST_TIMEOUT,
     TOO_MANY_REQUESTS,
     NO_INTERNET,

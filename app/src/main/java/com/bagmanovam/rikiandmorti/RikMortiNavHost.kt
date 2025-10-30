@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.bagmanovam.rikiandmorti.presentation.home.HomeScreen
 import com.bagmanovam.rikiandmorti.presentation.home.HomeScreenViewModel
 import com.bagmanovam.rikiandmorti.presentation.person.PersonScreen
@@ -26,13 +27,16 @@ fun RikMortiNavHost(
         composable<Home> {
             val homeViewModel = koinViewModel<HomeScreenViewModel>(viewModelStoreOwner = it)
             val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+            val lazyPaddings = homeViewModel.heroesFlow.collectAsLazyPagingItems()
 
             HomeScreen(
                 uiState = uiState,
+                events = homeViewModel.events,
+                lazyPaddings = lazyPaddings,
                 onItemClick = { itemId ->
                     navHostController.navigate(Description(itemId))
                 },
-                onHomeAction = homeViewModel::onAction
+                onHomeAction = homeViewModel::onAction,
             )
         }
 

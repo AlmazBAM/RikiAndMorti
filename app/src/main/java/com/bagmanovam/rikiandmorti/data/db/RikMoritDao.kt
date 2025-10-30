@@ -1,5 +1,6 @@
 package com.bagmanovam.rikiandmorti.data.db
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
@@ -12,6 +13,9 @@ interface RikMoritDao {
 
     @Insert(RikMortiEntity::class, REPLACE)
     fun addRikMortiHeroes(items: List<RikMortiEntity>)
+
+    @Query("SELECT * FROM rik_morti_items ORDER BY id")
+    fun getPagingSource(): PagingSource<Int, RikMortiEntity>
 
     @Query("SELECT * FROM rik_morti_items")
     fun getRikMortiHeroes(): Flow<List<RikMortiEntity>>

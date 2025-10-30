@@ -3,118 +3,137 @@ package com.bagmanovam.rikiandmorti.presentation.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bagmanovam.nasa_planets.core.domain.onError
-import com.bagmanovam.nasa_planets.core.domain.onSuccess
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.room.util.query
+import com.bagmanovam.rikiandmorti.core.domain.NetworkError
+import com.bagmanovam.rikiandmorti.domain.model.RikMortiHero
 import com.bagmanovam.rikiandmorti.domain.useCase.GetRikMoritHeroesDbUseCase
 import com.bagmanovam.rikiandmorti.domain.useCase.RequestRikMortiHeroesUseCase
-import com.bagmanovam.rikiandmorti.domain.useCase.SaveRikMoritHeroesDbUseCase
 import com.bagmanovam.rikiandmorti.domain.useCase.SearchRikMoritHeroesDbUseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HomeScreenViewModel(
     private val requestUseCase: RequestRikMortiHeroesUseCase,
-    private val saveDbUseCase: SaveRikMoritHeroesDbUseCase,
     private val getDbUseCase: GetRikMoritHeroesDbUseCase,
     private val searchDbUseCase: SearchRikMoritHeroesDbUseCase,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HomeScreenState())
-    val uiState = _uiState
-        .onStart {
-            registerOnQueryChange()
-            val items = getDbUseCase().first()
-            _uiState.update { state ->
-                state.copy(
-                    errorMessage = null,
-                    isLoading = true,
-                    isSwipedToUpdate = false,
-                    rikMortiHeroes = items
-                )
-            }
-        }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            HomeScreenState()
-        )
+    private val _uiState = MutableStateFlow<HomeScreenState>(HomeScreenState.Loading)
+    val uiState = _uiState.asStateFlow()
+    private val _events = Channel<HomeScreenEvent>()
 
+    val events = _events.receiveAsFlow()
     private val searchQueryFlow = MutableStateFlow("")
 
-    fun onAction(event: HomeEvent) {
-        when (event) {
-            is HomeEvent.OnQueryChange -> {
-                Log.e(TAG, "onAction: ${event.query}", )
-                searchQueryFlow.update { event.query.trim() }
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+    val heroesFlow: Flow<PagingData<RikMortiHero>> =
+        searchQueryFlow
+            .debounce(300)
+            .flatMapLatest { query ->
+                if (query.isBlank())
+                    requestUseCase()
+                else
+                    searchDbUseCase(query).map { PagingData.from(it) }
+            }.cachedIn(viewModelScope)
+            .onStart {
+                _uiState.value = HomeScreenState.Loading
             }
-
-            HomeEvent.OnRefresh -> {
+            .onEach {
                 _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        isSwipedToUpdate = true
+                    HomeScreenState.Success(
+                        isSwipedToUpdate = false
                     )
                 }
+            }
+            .catch {
+                Log.e(TAG, "catched ${it.message} ")
+                _events.send(HomeScreenEvent.Error(NetworkError.SERVER_ERROR))
+            }
+
+
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    val heroesFlow: Flow<PagingData<RikMortiHero>> =
+//        combine(searchQueryFlow, getDbUseCase()) { query, localCache ->
+//            query to localCache
+//        }.flatMapLatest { (query, localCache) ->
+//            flow {
+//                if (query.isBlank() && localCache.isNotEmpty()) {
+//                    emit(PagingData.from(localCache))
+//                } else if (query.isNotBlank()) {
+//                    val filtered = searchDbUseCase(query).firstOrNull().orEmpty()
+//                    emit(PagingData.from(filtered))
+//                }
+//                emitAll(networkPagingFlow)
+//            }
+//        }.onStart {
+//            _uiState.value = HomeScreenState.Loading
+//        }.onEach {
+//            _uiState.update {
+//                HomeScreenState.Success(
+//                    isSwipedToUpdate = false
+//                )
+//            }
+//        }.catch {
+//            Log.e(TAG, "catched ${it.message} ", )
+//            _events.send(HomeScreenEvent.Error(NetworkError.SERVER_ERROR))
+//        }.flowOn(Dispatchers.IO)
+//
+
+    fun onAction(event: HomeScreenAction) {
+        when (event) {
+            is HomeScreenAction.OnQueryChange -> {
+                searchQueryFlow.update { event.query.trim() }
+                _uiState.update { state ->
+                    if (state is HomeScreenState.Success)
+                        state.copy(query = event.query)
+                    else
+                        state
+                }
+            }
+
+            HomeScreenAction.OnRefresh -> {
+                _uiState.update { state ->
+                    if (state is HomeScreenState.Success)
+                        state.copy(
+                            isSwipedToUpdate = true
+                        )
+                    else state
+                }
                 viewModelScope.launch {
-                    requestUseCase(20)
-                        .onSuccess {
-                            Log.e(TAG, "onSuccess: $it")
-                            _uiState.update { state ->
-                                state.copy(
-                                    errorMessage = null,
-                                    isLoading = true,
-                                    isSwipedToUpdate = false
-                                )
-                            }
-                            saveDbUseCase(it)
+                    _events.send(HomeScreenEvent.Refresh)
+                    _uiState.update { state ->
+                        if (state is HomeScreenState.Success) {
+                            HomeScreenState.Success(
+                                isSwipedToUpdate = false,
+                            )
+                        } else {
+                            state
                         }
-                        .onError {
-                            Log.e(TAG, "onError: ")
-                            val items = getDbUseCase().first()
-                            _uiState.update { state ->
-                                state.copy(
-                                    errorMessage = it,
-                                    isLoading = true,
-                                    isSwipedToUpdate = false,
-                                    rikMortiHeroes = items
-                                )
-                            }
-                        }
+                    }
                 }
             }
         }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private fun registerOnQueryChange() {
-        searchQueryFlow
-            .onEach { input ->
-                _uiState.update { it.copy(query = input) }
-            }
-            .flatMapLatest { query ->
-                if (query.isBlank())
-                    getDbUseCase()
-                else
-                    searchDbUseCase(query)
-            }
-            .onEach { heroes ->
-                Log.e(TAG, "registerOnQueryChange: ${heroes.isEmpty()}")
-                _uiState.update {
-                    it.copy(
-                        rikMortiHeroes = heroes
-                    )
-                }
-            }
-            .launchIn(viewModelScope)
     }
 
     companion object {

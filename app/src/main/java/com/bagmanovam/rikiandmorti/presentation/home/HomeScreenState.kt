@@ -1,14 +1,17 @@
 package com.bagmanovam.rikiandmorti.presentation.home
 
-import androidx.compose.runtime.Immutable
+import androidx.paging.PagingData
 import com.bagmanovam.rikiandmorti.core.domain.NetworkError
 import com.bagmanovam.rikiandmorti.domain.model.RikMortiHero
+import kotlinx.coroutines.flow.Flow
 
-@Immutable
-data class HomeScreenState(
-    val isLoading: Boolean = false,
-    val isSwipedToUpdate: Boolean = false,
-    val errorMessage: NetworkError? = null,
-    val query: String = "",
-    val rikMortiHeroes: List<RikMortiHero> = emptyList(),
-)
+sealed interface HomeScreenState {
+    object Loading : HomeScreenState
+    data class Success(
+        val isSwipedToUpdate: Boolean = false,
+        val query: String = "",
+        val errorMessage: NetworkError? = null,
+    ) : HomeScreenState
+
+    data class Error(val error: NetworkError) : HomeScreenState
+}

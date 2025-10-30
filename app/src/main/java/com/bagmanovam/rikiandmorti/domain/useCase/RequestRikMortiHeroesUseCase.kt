@@ -1,9 +1,9 @@
 package com.bagmanovam.rikiandmorti.domain.useCase
 
-import com.bagmanovam.nasa_planets.core.domain.Result
-import com.bagmanovam.rikiandmorti.core.domain.NetworkError
+import androidx.paging.PagingData
 import com.bagmanovam.rikiandmorti.domain.model.RikMortiHero
+import kotlinx.coroutines.flow.Flow
 
 interface RequestRikMortiHeroesUseCase {
-    suspend operator fun invoke(itemId: Int): Result<List<RikMortiHero>, NetworkError>
+    operator fun invoke(): Flow<PagingData<RikMortiHero>>
 }

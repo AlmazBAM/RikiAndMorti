@@ -12,7 +12,6 @@ import com.bagmanovam.rikiandmorti.domain.interactor.GetRikMoritHeroesDbInteract
 import com.bagmanovam.rikiandmorti.domain.interactor.GetRikMortiHeroDbInteractor
 import com.bagmanovam.rikiandmorti.domain.interactor.RequestRikMortiHeroInteractor
 import com.bagmanovam.rikiandmorti.domain.interactor.RequestRikMortiHeroesInteractor
-import com.bagmanovam.rikiandmorti.domain.interactor.SaveRikMortiHeroesDbInteractor
 import com.bagmanovam.rikiandmorti.domain.interactor.SearchRikMortiHeroesDbInteractor
 import com.bagmanovam.rikiandmorti.domain.repository.RikMortiHeroesDbRepository
 import com.bagmanovam.rikiandmorti.domain.repository.SearchRikMortiHeroesRepository
@@ -20,7 +19,6 @@ import com.bagmanovam.rikiandmorti.domain.useCase.GetRikMoritHeroesDbUseCase
 import com.bagmanovam.rikiandmorti.domain.useCase.GetRikMortiHeroDbUseCase
 import com.bagmanovam.rikiandmorti.domain.useCase.RequestRikMortiHeroUseCase
 import com.bagmanovam.rikiandmorti.domain.useCase.RequestRikMortiHeroesUseCase
-import com.bagmanovam.rikiandmorti.domain.useCase.SaveRikMoritHeroesDbUseCase
 import com.bagmanovam.rikiandmorti.domain.useCase.SearchRikMoritHeroesDbUseCase
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -48,13 +46,12 @@ val dataModule = module {
             .build()
     }
 
-    single<SearchRikMortiHeroesRepository> { SearchRikMortiHeroesRepositoryImpl(get()) }
+    single<SearchRikMortiHeroesRepository> { SearchRikMortiHeroesRepositoryImpl(get(), get()) }
     single<RikMortiHeroesDbRepository> { RikMortiHeroesDbRepositoryImpl(get()) }
 
     factory<RequestRikMortiHeroesUseCase> { RequestRikMortiHeroesInteractor(get()) }
     factory<RequestRikMortiHeroUseCase> { RequestRikMortiHeroInteractor(get()) }
     factory<GetRikMoritHeroesDbUseCase> { GetRikMoritHeroesDbInteractor(get()) }
-    factory<SaveRikMoritHeroesDbUseCase> { SaveRikMortiHeroesDbInteractor(get()) }
     factory<GetRikMortiHeroDbUseCase> { GetRikMortiHeroDbInteractor(get()) }
     factory<SearchRikMoritHeroesDbUseCase> { SearchRikMortiHeroesDbInteractor(get()) }
 

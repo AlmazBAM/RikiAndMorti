@@ -3,8 +3,8 @@ package com.bagmanovam.rikiandmorti.presentation.person
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bagmanovam.nasa_planets.core.domain.onError
-import com.bagmanovam.nasa_planets.core.domain.onSuccess
+import com.bagmanovam.rikiandmorti.core.domain.onError
+import com.bagmanovam.rikiandmorti.core.domain.onSuccess
 import com.bagmanovam.rikiandmorti.domain.useCase.GetRikMortiHeroDbUseCase
 import com.bagmanovam.rikiandmorti.domain.useCase.RequestRikMortiHeroUseCase
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 class GetRikMoritHeroesDbInteractor(
     private val repository: RikMortiHeroesDbRepository
 ) : GetRikMoritHeroesDbUseCase {
-    override suspend fun invoke(): Flow<List<RikMortiHero>> {
-        return withContext(Dispatchers.IO) { repository.getAllRikMortiHeroes() }
+    override fun invoke(): Flow<List<RikMortiHero>> {
+        return  repository.getAllRikMortiHeroes()
     }
 }

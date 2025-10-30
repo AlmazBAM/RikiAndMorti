@@ -16,6 +16,17 @@ fun RikMortiHeroDto.toDomain(): RikMortiHero {
     )
 }
 
+fun RikMortiHeroDto.dtoToEntity(): RikMortiEntity {
+    return RikMortiEntity(
+        id = this.id,
+        name = this.name,
+        species = this.species,
+        status = this.status,
+        gender = this.gender,
+        imageUrl = this.image
+    )
+}
+
 fun RikMortiEntity.entityToDomain(): RikMortiHero {
     return RikMortiHero(
         id = this.id,

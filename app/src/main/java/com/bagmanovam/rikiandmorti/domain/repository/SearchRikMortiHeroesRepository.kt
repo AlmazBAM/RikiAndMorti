@@ -1,10 +1,13 @@
 package com.bagmanovam.rikiandmorti.domain.repository
 
-import com.bagmanovam.nasa_planets.core.domain.Result
+import androidx.paging.PagingData
+import com.bagmanovam.rikiandmorti.core.domain.Result
 import com.bagmanovam.rikiandmorti.core.domain.NetworkError
+import com.bagmanovam.rikiandmorti.data.model.RikMortiHeroesDto
 import com.bagmanovam.rikiandmorti.domain.model.RikMortiHero
+import kotlinx.coroutines.flow.Flow
 
 interface SearchRikMortiHeroesRepository {
-    suspend fun requestRikMortiHeroes(count: Int): Result<List<RikMortiHero>, NetworkError>
+    fun requestRikMortiHeroes(): Flow<PagingData<RikMortiHero>>
     suspend fun requestRikMortiHero(itemId: Int): Result<RikMortiHero, NetworkError>
 }
