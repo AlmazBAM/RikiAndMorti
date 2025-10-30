@@ -151,7 +151,7 @@ fun HomeScreen(
                                 Log.e("TAG", "HomeScreen: ${lazyPaddings[i]}")
                                 lazyPaddings[i]?.let {
                                     RikMortiHeroCard(
-                                        modifier = Modifier.fillMaxWidth(),
+                                        modifier = Modifier,
                                         item = it,
                                         onItemClick = { onItemClick(it.id) }
                                     )
