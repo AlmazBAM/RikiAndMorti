@@ -19,6 +19,7 @@ room = "2.7.2"
 retrofit = "2.9.0"
 okhttp = "4.9.3"
 ksp = "2.2.0-2.0.2"
+sqliteKtx = "2.6.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -56,6 +57,7 @@ room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-paging = { module = "androidx.room:room-paging", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-sqlite-ktx = { group = "androidx.sqlite", name = "sqlite-ktx", version.ref = "sqliteKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

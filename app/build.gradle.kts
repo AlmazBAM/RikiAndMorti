@@ -48,6 +48,7 @@ dependencies {
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.compose)
+    implementation(libs.androidx.sqlite.ktx)
     debugImplementation(libs.bundles.compose.debug)
 
     implementation(libs.navigation.compose)
