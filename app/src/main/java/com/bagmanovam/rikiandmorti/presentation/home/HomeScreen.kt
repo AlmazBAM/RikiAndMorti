@@ -148,7 +148,7 @@ fun HomeScreen(
                             contentPadding = PaddingValues(vertical = 16.dp)
                         ) {
                             items(lazyPaddings.itemCount) { i ->
-                                Log.e("TAG", "HomeScreen: ${lazyPaddings[i]}")
+                                Log.d("TAG", "HomeScreen: ${lazyPaddings[i]}")
                                 lazyPaddings[i]?.let {
                                     RikMortiHeroCard(
                                         modifier = Modifier,
@@ -177,7 +177,7 @@ fun HomeScreen(
                                         item(span = { GridItemSpan(2) }) {
                                             Text(
                                                 modifier = Modifier.clickable {
-                                                    lazyPaddings.refresh()
+                                                    lazyPaddings.retry()
                                                 },
                                                 text = "Ошибка подгрузки следующей страницы: ${append.error.message}",
                                                 textAlign = TextAlign.Center

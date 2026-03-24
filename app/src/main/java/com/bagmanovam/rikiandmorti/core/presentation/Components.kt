@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -84,16 +82,12 @@ fun SearchBar(
         shape = RoundedCornerShape(10.dp)
     )
 }
-
 @Composable
 fun RikMortiHeroCard(
     modifier: Modifier = Modifier,
     item: RikMortiHero,
     onItemClick: () -> Unit,
 ) {
-    LaunchedEffect(item.imageUrl) {
-        Log.e("TAG", "RikMortiHeroCard: imageurl ${item.imageUrl}")
-    }
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -119,7 +113,7 @@ fun RikMortiHeroCard(
                     .diskCachePolicy(CachePolicy.ENABLED)
                     .memoryCachePolicy(CachePolicy.ENABLED)
                     .build(),
-                onError = { Log.e("CoilError", "Failed to load image: ${it.result.throwable}") },
+                onError = { Log.d("CoilError", "Failed to load image: ${it.result.throwable}") },
                 onSuccess = { Log.d("CoilSuccess", "Image loaded successfully") },
                 contentDescription = "Item of the space objects"
             )
