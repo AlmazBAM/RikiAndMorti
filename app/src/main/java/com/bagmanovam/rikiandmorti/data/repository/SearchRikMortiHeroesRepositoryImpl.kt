@@ -13,6 +13,7 @@ import com.bagmanovam.rikiandmorti.data.mapper.entityToDomain
 import com.bagmanovam.rikiandmorti.data.mapper.toDomain
 import com.bagmanovam.rikiandmorti.domain.model.RikMortiHero
 import com.bagmanovam.rikiandmorti.domain.repository.SearchRikMortiHeroesRepository
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -21,7 +22,6 @@ import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
-import kotlin.coroutines.coroutineContext
 
 @OptIn(ExperimentalPagingApi::class)
 class SearchRikMortiHeroesRepositoryImpl(
@@ -32,7 +32,7 @@ class SearchRikMortiHeroesRepositoryImpl(
         return Pager(
             config = PagingConfig(
                 pageSize = 20,
-                prefetchDistance = 3,
+                prefetchDistance = 4,
                 enablePlaceholders = false
             ),
             remoteMediator = RikMortiRemoteMediator(api, dao),
@@ -76,7 +76,7 @@ class SearchRikMortiHeroesRepositoryImpl(
         } catch (_: ConnectException) {
             return Result.Error(NetworkError.CONNECTION_ERROR)
         } catch (_: Exception) {
-            coroutineContext.ensureActive()
+            currentCoroutineContext().ensureActive()
             return Result.Error(NetworkError.UNKNOWN)
         }
     }

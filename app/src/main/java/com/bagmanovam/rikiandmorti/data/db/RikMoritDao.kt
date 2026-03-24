@@ -25,4 +25,7 @@ interface RikMoritDao {
 
     @Query("SELECT * FROM rik_morti_items WHERE id=:noteId")
     fun getRikMoritHero(noteId: Int): RikMortiEntity
+
+    @Query("SELECT MAX(id) FROM rik_morti_items")
+    fun getMaxHeroId(): Int?
 }
